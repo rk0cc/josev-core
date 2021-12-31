@@ -38,8 +38,8 @@ semver,valid
 +invalid,false
 -invalid,false
 -invalid+invalid,false
--invalid.01,false,
-alpha,false,
+-invalid.01,false
+alpha,false
 alpha.beta,false
 alpha.beta.1,false
 alpha.1,false
