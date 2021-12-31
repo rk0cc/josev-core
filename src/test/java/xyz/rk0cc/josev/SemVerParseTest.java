@@ -7,12 +7,11 @@ import org.junit.jupiter.api.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-final class SemVerTest {
+final class SemVerParseTest {
     @DisplayName("Get semver from constructor")
     @Order(1)
     @Test

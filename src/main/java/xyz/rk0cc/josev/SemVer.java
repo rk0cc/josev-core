@@ -234,22 +234,56 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
         return preRelease != null || major == 0;
     }
 
+    /**
+     * Check this version is greater than <code>compare</code>
+     *
+     * @param compare Another {@link SemVer} which using to compare with this.
+     *
+     * @return <code>true</code> if {@link #compareTo(SemVer)} return greater than <code>0</code>.
+     */
     public boolean isGreater(@Nonnull SemVer compare) {
         return this.compareTo(compare) > 0;
     }
 
+    /**
+     * Check this version is lower than <code>compare</code>
+     *
+     * @param compare Another {@link SemVer} which using to compare with this.
+     *
+     * @return <code>true</code> if {@link #compareTo(SemVer)} return lowerer than <code>0</code>.
+     */
     public boolean isLower(@Nonnull SemVer compare) {
         return this.compareTo(compare) < 0;
     }
 
+    /**
+     * Check this version is greater or equals with <code>compare</code>
+     *
+     * @param compare Another {@link SemVer} which using to compare with this.
+     *
+     * @return <code>true</code> if {@link #compareTo(SemVer)} return greater or equals with <code>0</code>.
+     */
     public boolean isGreaterOrEquals(@Nonnull SemVer compare) {
         return this.isGreater(compare) || this.equals(compare);
     }
 
+    /**
+     * Check this version is lowerer or equals with <code>compare</code>
+     *
+     * @param compare Another {@link SemVer} which using to compare with this.
+     *
+     * @return <code>true</code> if {@link #compareTo(SemVer)} return lower or equals with <code>0</code>.
+     */
     public boolean isLowerOrEquals(@Nonnull SemVer compare) {
         return this.isLower(compare) || this.equals(compare);
     }
 
+    /**
+     * Assemble {@link #major}, {@link #minor}, {@link #patch}, {@link #preRelease} and {@link #build} to
+     * {@link String} without validate with {@link #SEMVER_REGEX}.
+     *
+     * @return An unchecked {@link String} of semver value.
+     */
     @Nonnull
     private String $value() {
         StringBuilder builder = new StringBuilder()
@@ -263,6 +297,11 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
         return builder.toString();
     }
 
+    /**
+     * Return a {@link String} of version which follows Semantic Versioning standard.
+     *
+     * @return An assembled {@link String} of Semantic Versioning.
+     */
     @SuppressWarnings("UnusedReturnValue")
     @Nonnull
     public String value() {
@@ -271,6 +310,18 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
         return v;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @apiNote The comparing order is following with this:
+     *          <ol>
+     *              <li>{@link #major() Major version}</li>
+     *              <li>{@link #minor() Minor version}</li>
+     *              <li>{@link #patch() Patch version}</li>
+     *              <li>{@link #build() Build tag}</li>
+     *              <li>{@link #preRelease() Pre-release tag} (reversed)</li>
+     *          </ol>
+     */
     @SuppressWarnings("ConstantConditions")
     @Override
     public int compareTo(@Nonnull SemVer o) {
@@ -306,6 +357,16 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
         return 0;
     }
 
+    /**
+     * Compare another {@link SemVer} which has equals data of versioning.
+     *
+     * @param o Another {@link Object} that using to compare.
+     *
+     * @return <code>true</code> if <code>o</code> contains exact same data of versioning.
+     *
+     * @apiNote Since it is inherited from {@link Object#equals(Object)}, the parameter type can not be specified and
+     *          remain {@link Object}.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -314,11 +375,23 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
         return this.compareTo(semVer) == 0;
     }
 
+    /**
+     * Calculating hash code form all provided versioning data.
+     *
+     * @return Hashed {@link #major()}, {@link #minor()}, {@link #patch()}, {@link #preRelease()} and {@link #build()}.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(major, minor, patch, preRelease, build);
     }
 
+    /**
+     * Return a {@link String} of object-like context for logging purpose.
+     *
+     * @apiNote It does not return a {@link String} of {@link #value() versioning}.
+     *
+     * @return Completed information of versioning value.
+     */
     @Nonnull
     @Override
     public String toString() {
@@ -331,6 +404,16 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
                 '}';
     }
 
+    /**
+     * Generating a new {@link SemVer} object by a {@link String}.
+     *
+     * @param version A {@link String} of Semantic Versioning.
+     *
+     * @return A Java object of {@link SemVer Semantic Versioning}.
+     *
+     * @throws NonStandardSemVerException If <code>version</code> does not follows the standard of Semantic Versioning.
+     *                                    Or encounter a problem when handling data in JVM.
+     */
     @SuppressWarnings("AssertWithSideEffects")
     @Nonnull
     public static SemVer parse(@Nonnull String version) throws NonStandardSemVerException {
