@@ -5,7 +5,13 @@ import xyz.rk0cc.josev.SemVer;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
-abstract class SemVerCollection implements Collection<SemVer>, Cloneable {
+public abstract class SemVerCollection implements Collection<SemVer>, Cloneable {
+    protected final Collection<SemVer> collection;
+
+    protected SemVerCollection(Collection<SemVer> collection) {
+        this.collection = collection;
+    }
+
     @Override
     public final boolean add(SemVer semVer) {
         throw new UnsupportedOperationException("add");
