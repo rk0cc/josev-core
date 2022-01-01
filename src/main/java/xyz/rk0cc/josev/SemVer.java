@@ -413,6 +413,8 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
      *
      * @throws NonStandardSemVerException If <code>version</code> does not follows the standard of Semantic Versioning.
      *                                    Or encounter a problem when handling data in JVM.
+     *
+     * @see #tryParse(String)
      */
     @SuppressWarnings("AssertWithSideEffects")
     @Nonnull
@@ -460,6 +462,24 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
             }
         } catch (Throwable t) {
             throw (t instanceof NonStandardSemVerException nt) ? nt : new NonStandardSemVerException(version, t);
+        }
+    }
+
+    /**
+     * Generating a new {@link SemVer} object by a {@link String}. However, when {@link NonStandardSemVerException}
+     * throw on {@link #parse(String)}, it returns <code>null</code>/
+     *
+     * @param version A {@link String} of version.
+     *
+     * @return A Java object of {@link SemVer Semantic Versioning}. Or <code>null</code> if <code>version</code> causes
+     *         {@link #parse(String)} throws {@link NonStandardSemVerException}.
+     */
+    @Nullable
+    public static SemVer tryParse(@Nonnull String version) {
+        try {
+            return parse(version);
+        } catch (NonStandardSemVerException e) {
+            return null;
         }
     }
 }

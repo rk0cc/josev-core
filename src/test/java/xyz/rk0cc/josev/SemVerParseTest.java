@@ -69,4 +69,12 @@ final class SemVerParseTest {
             fail(e);
         }
     }
+
+    @DisplayName("Check semver try parse that return null if invalid")
+    @Order(3)
+    @Test
+    void testTryParse() {
+        assertNotNull(SemVer.tryParse("1.0.0"));
+        assertNull(SemVer.tryParse("1.0"));
+    }
 }
