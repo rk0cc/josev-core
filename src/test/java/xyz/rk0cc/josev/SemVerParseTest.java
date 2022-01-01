@@ -4,9 +4,13 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.junit.jupiter.api.*;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,7 +56,13 @@ final class SemVerParseTest {
     void testSemVerParser() {
         try {
             CSVReader csvr = new CSVReader(
-                    new FileReader("src/test/resources/xyz/rk0cc/josev/semver_sample.csv")
+                    new FileReader(
+                            Paths.get(
+                                    Objects.requireNonNull(
+                                            SemVerParseTest.class.getResource("semver_sample.csv")
+                                    ).toURI()
+                            ).toFile()
+                    )
             );
             List<String[]> csvrow = csvr.readAll();
 
@@ -65,7 +75,7 @@ final class SemVerParseTest {
                         () -> SemVer.parse(csvp[0])
                 );
             }
-        } catch (IOException | CsvException e) {
+        } catch (URISyntaxException | IOException | CsvException e) {
             fail(e);
         }
     }
