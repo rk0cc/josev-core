@@ -18,7 +18,7 @@ public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enu
             @Nullable SemVerConstraintNode start,
             @Nullable SemVerConstraintNode end
     ) {
-        assert Enum.class.isAssignableFrom(constraintPattern.getClass());
+        assert constraintPattern.getClass().isEnum();
         assert start == null || start.operator() == '>';
         assert end == null || end.operator() == '<';
         assert start == null || end == null || start.semVer().isLowerOrEquals(end.semVer());
