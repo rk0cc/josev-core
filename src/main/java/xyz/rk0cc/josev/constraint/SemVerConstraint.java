@@ -3,9 +3,7 @@ package xyz.rk0cc.josev.constraint;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 
 public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enum<?>>> implements Serializable {
     private final String rawConstraint;
@@ -20,6 +18,7 @@ public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enu
             @Nullable SemVerConstraintNode start,
             @Nullable SemVerConstraintNode end
     ) {
+        assert Enum.class.isAssignableFrom(constraintPattern.getClass());
         assert start == null || start.operator() == '>';
         assert end == null || end.operator() == '<';
         assert start == null || end == null || start.semVer().isLowerOrEquals(end.semVer());
