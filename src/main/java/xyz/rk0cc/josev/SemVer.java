@@ -467,7 +467,7 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
 
     /**
      * Generating a new {@link SemVer} object by a {@link String}. However, when {@link NonStandardSemVerException}
-     * throw on {@link #parse(String)}, it returns <code>null</code>/
+     * throw on {@link #parse(String)}, it returns <code>null</code>.
      *
      * @param version A {@link String} of version.
      *
