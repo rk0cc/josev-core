@@ -6,6 +6,8 @@
 
     <name>josev-core</name>
     <description>Parsing a string of version which follow Semantic Versioning 2.0.0 into a Java object</description>
+    <packaging>jar</packaging>
+    <url>https://github.com/rk0cc/josev-core</url>
 
     <contributors>
         <contributor>
