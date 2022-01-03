@@ -16,7 +16,7 @@ import java.io.Serializable;
  *
  * @since 1.0.0
  */
-public class SemVerRange implements Serializable {
+public abstract class SemVerRange implements Serializable {
     /**
      * The range node.
      */
@@ -28,7 +28,7 @@ public class SemVerRange implements Serializable {
      * @param start The range start from.
      * @param end The range end at.
      */
-    public SemVerRange(@Nullable SemVerRangeNode start, @Nullable SemVerRangeNode end) {
+    protected SemVerRange(@Nullable SemVerRangeNode start, @Nullable SemVerRangeNode end) {
         assert start == null || start.operator() == '>';
         assert end == null || end.operator() == '<';
         assert start == null || end == null || start.semVer().isLowerOrEquals(end.semVer());
