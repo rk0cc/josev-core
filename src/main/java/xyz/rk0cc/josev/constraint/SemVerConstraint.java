@@ -1,53 +1,54 @@
 package xyz.rk0cc.josev.constraint;
 
-import xyz.rk0cc.josev.NonStandardSemVerException;
 import xyz.rk0cc.josev.SemVer;
+import xyz.rk0cc.josev.SemVerRange;
+import xyz.rk0cc.josev.SemVerRangeNode;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.Serializable;
 import java.lang.reflect.*;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
- * Version constraint is a definition of {@link SemVer} range which bounding the version to ensure compatibility.
+ * Version constraint is a definition of {@link SemVer} range which bounding the version to ensure compatibility. This,
+ * class in extended from {@link SemVerRange} with more complicated detection to determine which {@link SemVer} can be
+ * accepted depending on different rules.
  *
  * @param <E> Definition of {@link ConstraintPattern constraint pattern} that available in the subclass.
  *
  * @since 1.0.0
  */
-public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enum<?>>> implements Serializable {
+public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enum<?>>> extends SemVerRange {
     /**
      * Version constraint that inserted by user.
      */
     private final String rawConstraint;
 
     /**
-     * The constraint range node.
-     */
-    private final SemVerConstraintNode start, end;
-
-    /**
      * Pattern uses in the version constraint.
      */
     private final E constraintPattern;
 
+    /**
+     * Create version constraint of {@link SemVer}.
+     * <br/>
+     * All implemented subclass should keep this constructor as private scope.
+     *
+     * @param constraintPattern An {@link ConstraintPattern} that applied from parser.
+     * @param rawConstraint The version constraint that inserted by user.
+     * @param start Start of the version range.
+     * @param end End of the version range.
+     */
     protected SemVerConstraint(
             @Nonnull E constraintPattern,
             @Nullable String rawConstraint,
-            @Nullable SemVerConstraintNode start,
-            @Nullable SemVerConstraintNode end
+            @Nullable SemVerRangeNode start,
+            @Nullable SemVerRangeNode end
     ) {
-        assert constraintPattern.getClass().isEnum();
-        assert start == null || start.operator() == '>';
-        assert end == null || end.operator() == '<';
-        assert start == null || end == null || start.semVer().isLowerOrEquals(end.semVer());
-
+        super(start, end);
         this.rawConstraint = rawConstraint;
         this.constraintPattern = constraintPattern;
-        this.start = start;
-        this.end = end;
     }
 
     /**
@@ -71,87 +72,28 @@ public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enu
         return rawConstraint;
     }
 
-    /**
-     * A constraint node which specify the minimum version that can be accepted (Assume no version omitted between
-     * start and {@link #end() start}).
-     *
-     * @return A node of version information that can be assembled to traditional syntax.
-     *
-     * @see #end()
-     */
-    @Nullable
-    public final SemVerConstraintNode start() {
-        return start;
-    }
-
-    /**
-     * A constraint node which specify the maximum version that can be accepted (Assume no version omitted between
-     * {@link #start() start} and end).
-     *
-     * @return A node of version information that can be assembled to traditional syntax.
-     *
-     * @see #start()
-     */
-    @Nullable
-    public final SemVerConstraintNode end() {
-        return end;
-    }
-
-    /**
-     * Check this <code>semVer</code> is in the constraint.
-     *
-     * @param semVer A version that to determine is in the constraint range.
-     *
-     * @return <code>true</code> if in range.
-     */
-    public boolean isInConstraint(@Nonnull SemVer semVer) {
-        final boolean afterStart = start() == null || (start().orEquals()
-                ? start().semVer().isLowerOrEquals(semVer)
-                : start().semVer().isLower(semVer));
-
-        final boolean beforeEnd = end() == null || (end().orEquals()
-                ? end().semVer().isGreaterOrEquals(semVer)
-                : end().semVer().isGreater(semVer));
-
-        return afterStart && beforeEnd;
-    }
-
-    /**
-     * Check this <code>semVer</code> is in the constraint.
-     *
-     * @param semVer A version that to determine is in the constraint range.
-     *
-     * @return <code>true</code> if in range.
-     *
-     * @throws NonStandardSemVerException When <code>semVer</code> {@link String} can not be
-     *                                    {@link SemVer#parse(String) parsed}.
-     */
-    public final boolean isInConstraint(@Nonnull String semVer) throws NonStandardSemVerException {
-        return this.isInConstraint(SemVer.parse(semVer));
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SemVerConstraint<?> that = (SemVerConstraint<?>) o;
         return Objects.equals(rawConstraint, that.rawConstraint)
-                && Objects.equals(start, that.start)
-                && Objects.equals(end, that.end)
+                && Objects.equals(start(), that.start())
+                && Objects.equals(end(), that.end())
                 && constraintPattern.equals(that.constraintPattern);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(rawConstraint, start, end, constraintPattern);
+        return Objects.hash(rawConstraint, start(), end(), constraintPattern);
     }
 
     @Override
     public String toString() {
         return "SemVerConstraint{" +
                 "rawConstraint='" + rawConstraint + '\'' +
-                ", start=" + start +
-                ", end=" + end +
+                ", start=" + start() +
+                ", end=" + end() +
                 ", constraintPattern=" + constraintPattern +
                 '}';
     }

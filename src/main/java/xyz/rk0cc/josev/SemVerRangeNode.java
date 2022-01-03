@@ -1,13 +1,11 @@
-package xyz.rk0cc.josev.constraint;
-
-import xyz.rk0cc.josev.SemVer;
+package xyz.rk0cc.josev;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Objects;
 
-public record SemVerConstraintNode(@Nonnull SemVer semVer, char operator, boolean orEquals) implements Serializable {
-    public SemVerConstraintNode(@Nonnull SemVer semVer, char operator, boolean orEquals) {
+public record SemVerRangeNode(@Nonnull SemVer semVer, char operator, boolean orEquals) implements Serializable {
+    public SemVerRangeNode(@Nonnull SemVer semVer, char operator, boolean orEquals) {
         assert operator == '<' || operator == '>';
         this.semVer = semVer;
         this.operator = operator;
@@ -34,7 +32,7 @@ public record SemVerConstraintNode(@Nonnull SemVer semVer, char operator, boolea
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SemVerConstraintNode that = (SemVerConstraintNode) o;
+        SemVerRangeNode that = (SemVerRangeNode) o;
         return operator == that.operator && orEquals == that.orEquals && semVer.equals(that.semVer);
     }
 

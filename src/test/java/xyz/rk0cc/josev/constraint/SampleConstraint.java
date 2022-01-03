@@ -2,6 +2,7 @@ package xyz.rk0cc.josev.constraint;
 
 import xyz.rk0cc.josev.NonStandardSemVerException;
 import xyz.rk0cc.josev.SemVer;
+import xyz.rk0cc.josev.SemVerRangeNode;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,8 +15,8 @@ public final class SampleConstraint extends SemVerConstraint<SampleConstraintPat
     private SampleConstraint(
             @Nonnull SampleConstraintPattern constraintPattern,
             @Nullable String rawConstraint,
-            @Nullable SemVerConstraintNode start,
-            @Nullable SemVerConstraintNode end
+            @Nullable SemVerRangeNode start,
+            @Nullable SemVerRangeNode end
     ) {
         super(constraintPattern, rawConstraint, start, end);
     }
@@ -34,12 +35,12 @@ public final class SampleConstraint extends SemVerConstraint<SampleConstraintPat
             case TRADITIONAL -> {
                 assert versionConstraint != null;
                 final String[] spiltedTRange = versionConstraint.split("\\s");
-                final Function<String, SemVerConstraintNode> tvcNodeMaker = s -> {
+                final Function<String, SemVerRangeNode> tvcNodeMaker = s -> {
                     assert !(s.contains(">") && s.contains("<"));
                     boolean orEquals = s.contains("=");
 
                     try {
-                        return new SemVerConstraintNode(
+                        return new SemVerRangeNode(
                                 SemVer.parse(s.substring(orEquals ? 2 : 1)),
                                 s.charAt(0),
                                 orEquals
@@ -50,7 +51,7 @@ public final class SampleConstraint extends SemVerConstraint<SampleConstraintPat
                 };
                 switch (spiltedTRange.length) {
                     case 1:
-                        final SemVerConstraintNode svcn = tvcNodeMaker.apply(spiltedTRange[0]);
+                        final SemVerRangeNode svcn = tvcNodeMaker.apply(spiltedTRange[0]);
                         return svcn.operator() == '>'
                                 ? new SampleConstraint(pattern, versionConstraint, svcn, null)
                                 : new SampleConstraint(pattern, versionConstraint, null, svcn);
@@ -74,8 +75,8 @@ public final class SampleConstraint extends SemVerConstraint<SampleConstraintPat
                     return new SampleConstraint(
                             pattern,
                             versionConstraint,
-                            new SemVerConstraintNode(importedVer, '>', true),
-                            new SemVerConstraintNode(
+                            new SemVerRangeNode(importedVer, '>', true),
+                            new SemVerRangeNode(
                                     new SemVer(importedVer.major() + 1, 0, 0),
                                     '<',
                                     false
