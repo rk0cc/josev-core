@@ -12,14 +12,15 @@ import java.util.regex.Pattern;
 
 /**
  * Version constraint is a definition of {@link SemVer} range which bounding the version to ensure compatibility. This,
- * class in extended from {@link SemVerRange} with more complicated detection to determine which {@link SemVer} can be
- * accepted depending on different rules.
+ * class in extended from {@link SemVerRange.NullableSemVerRange} with more complicated detection to determine which
+ * {@link SemVer} can be accepted depending on different rules.
  *
  * @param <E> Definition of {@link ConstraintPattern constraint pattern} that available in the subclass.
  *
  * @since 1.0.0
  */
-public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enum<?>>> extends SemVerRange {
+public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enum<?>>>
+        extends SemVerRange.NullableSemVerRange {
     /**
      * Version constraint that inserted by user.
      */

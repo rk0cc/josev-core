@@ -11,12 +11,13 @@ import java.io.Serializable;
  * are {@link String} and difficult to predict next {@link SemVer} in a {@link java.util.Collection}. As a result,
  * determine is in range with {@link SemVer#isGreater(SemVer)}, {@link SemVer#isLower(SemVer)} or more.
  * <br/>
- * Using to assign version constraint class {@link xyz.rk0cc.josev.constraint.SemVerConstraint} is inherited from this
- * class.
+ * Using to assign version constraint class {@link xyz.rk0cc.josev.constraint.SemVerConstraint} is inherited from
+ * {@link SemVerRange.NullableSemVerRange}.
  *
  * @since 1.0.0
  */
-public abstract class SemVerRange implements Serializable {
+public sealed abstract class SemVerRange implements Serializable
+        permits SemVerRange.NonnullSemVerRange, SemVerRange.NullableSemVerRange {
     /**
      * The range node.
      */
@@ -28,7 +29,7 @@ public abstract class SemVerRange implements Serializable {
      * @param start The range start from.
      * @param end The range end at.
      */
-    protected SemVerRange(@Nullable SemVerRangeNode start, @Nullable SemVerRangeNode end) {
+    protected SemVerRange(SemVerRangeNode start, SemVerRangeNode end) {
         assert start == null || start.operator() == '>';
         assert end == null || end.operator() == '<';
         assert start == null || end == null || start.semVer().isLowerOrEquals(end.semVer());
@@ -45,8 +46,7 @@ public abstract class SemVerRange implements Serializable {
      *
      * @see #end()
      */
-    @Nullable
-    public final SemVerRangeNode start() {
+    protected SemVerRangeNode start() {
         return start;
     }
 
@@ -58,8 +58,7 @@ public abstract class SemVerRange implements Serializable {
      *
      * @see #start()
      */
-    @Nullable
-    public final SemVerRangeNode end() {
+    protected SemVerRangeNode end() {
         return end;
     }
 
@@ -70,17 +69,7 @@ public abstract class SemVerRange implements Serializable {
      *
      * @return <code>true</code> if in range.
      */
-    public boolean isInRange(@Nonnull SemVer semVer) {
-        final boolean afterStart = start() == null || (start().orEquals()
-                ? start().semVer().isLowerOrEquals(semVer)
-                : start().semVer().isLower(semVer));
-
-        final boolean beforeEnd = end() == null || (end().orEquals()
-                ? end().semVer().isGreaterOrEquals(semVer)
-                : end().semVer().isGreater(semVer));
-
-        return afterStart && beforeEnd;
-    }
+    public abstract boolean isInRange(@Nonnull SemVer semVer);
 
     /**
      * Check this <code>semVer</code> is in the range.
@@ -94,5 +83,97 @@ public abstract class SemVerRange implements Serializable {
      */
     public final boolean isInRange(@Nonnull String semVer) throws NonStandardSemVerException {
         return this.isInRange(SemVer.parse(semVer));
+    }
+
+    /**
+     * A {@link SemVerRange} that {@link Nonnull disallowing parsing <code>null</code>}.
+     *
+     * @since 1.0.0
+     */
+    public static non-sealed class NonnullSemVerRange extends SemVerRange {
+        public NonnullSemVerRange(@Nonnull SemVerRangeNode start, @Nonnull SemVerRangeNode end) {
+            super(start, end);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Nonnull
+        @Override
+        public SemVerRangeNode start() {
+            return super.start();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Nonnull
+        @Override
+        public SemVerRangeNode end() {
+            return super.end();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean isInRange(@Nonnull SemVer semVer) {
+            final boolean afterStart = start().orEquals()
+                    ? start().semVer().isLowerOrEquals(semVer)
+                    : start().semVer().isLower(semVer);
+
+            final boolean beforeEnd = end().orEquals()
+                    ? end().semVer().isGreaterOrEquals(semVer)
+                    : end().semVer().isGreater(semVer);
+
+            return afterStart && beforeEnd;
+        }
+    }
+
+    /**
+     * A {@link SemVerRange} that {@link Nullable allowing parsing <code>null</code>}.
+     *
+     * @since 1.0.0
+     */
+    public static non-sealed class NullableSemVerRange extends SemVerRange {
+
+        public NullableSemVerRange(@Nullable SemVerRangeNode start, @Nullable SemVerRangeNode end) {
+            super(start, end);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Nullable
+        @Override
+        public SemVerRangeNode start() {
+            return super.start();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Nullable
+        @Override
+        public SemVerRangeNode end() {
+            return super.end();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @SuppressWarnings("ConstantConditions")
+        @Override
+        public boolean isInRange(@Nonnull SemVer semVer) {
+            final boolean afterStart = start() == null || (start().orEquals()
+                    ? start().semVer().isLowerOrEquals(semVer)
+                    : start().semVer().isLower(semVer));
+
+            final boolean beforeEnd = end() == null || (end().orEquals()
+                    ? end().semVer().isGreaterOrEquals(semVer)
+                    : end().semVer().isGreater(semVer));
+
+            return afterStart && beforeEnd;
+        }
     }
 }
