@@ -16,7 +16,7 @@ import java.io.Serializable;
  *
  * @since 1.0.0
  */
-public sealed abstract class SemVerRange implements Serializable
+public sealed abstract class SemVerRange implements Serializable, SemVerDetermineInRage
         permits SemVerRange.NonnullSemVerRange, SemVerRange.NullableSemVerRange {
     /**
      * The range node.
@@ -63,26 +63,10 @@ public sealed abstract class SemVerRange implements Serializable
     }
 
     /**
-     * Check this <code>semVer</code> is in the range.
-     *
-     * @param semVer A version that to determine is in the constraint range.
-     *
-     * @return <code>true</code> if in range.
-     */
-    public abstract boolean isInRange(@Nonnull SemVer semVer);
-
-    /**
-     * Check this <code>semVer</code> is in the range.
-     *
-     * @param semVer A version that to determine is in the constraint range.
-     *
-     * @return <code>true</code> if in range.
-     *
-     * @throws NonStandardSemVerException When <code>semVer</code> {@link String} can not be
-     *                                    {@link SemVer#parse(String) parsed}.
+     * {@inheritDoc}
      */
     public final boolean isInRange(@Nonnull String semVer) throws NonStandardSemVerException {
-        return this.isInRange(SemVer.parse(semVer));
+        return SemVerDetermineInRage.super.isInRange(semVer);
     }
 
     /**
@@ -91,6 +75,12 @@ public sealed abstract class SemVerRange implements Serializable
      * @since 1.0.0
      */
     public static non-sealed class NonnullSemVerRange extends SemVerRange {
+        /**
+         * Create new range definition of {@link SemVer} that disallows null.
+         *
+         * @param start The range start from.
+         * @param end The range end at.
+         */
         public NonnullSemVerRange(@Nonnull SemVerRangeNode start, @Nonnull SemVerRangeNode end) {
             super(start, end);
         }
@@ -137,6 +127,12 @@ public sealed abstract class SemVerRange implements Serializable
      */
     public static non-sealed class NullableSemVerRange extends SemVerRange {
 
+        /**
+         * Create new range definition of {@link SemVer} that allows null.
+         *
+         * @param start The range start from.
+         * @param end The range end at.
+         */
         public NullableSemVerRange(@Nullable SemVerRangeNode start, @Nullable SemVerRangeNode end) {
             super(start, end);
         }
