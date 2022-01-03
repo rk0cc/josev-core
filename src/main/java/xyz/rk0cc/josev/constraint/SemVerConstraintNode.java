@@ -4,6 +4,7 @@ import xyz.rk0cc.josev.SemVer;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
+import java.util.Objects;
 
 public record SemVerConstraintNode(@Nonnull SemVer semVer, char operator, boolean orEquals) implements Serializable {
     public SemVerConstraintNode(@Nonnull SemVer semVer, char operator, boolean orEquals) {
@@ -27,6 +28,19 @@ public record SemVerConstraintNode(@Nonnull SemVer semVer, char operator, boolea
         b.append(semVer.value());
 
         return b.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SemVerConstraintNode that = (SemVerConstraintNode) o;
+        return operator == that.operator && orEquals == that.orEquals && semVer.equals(that.semVer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(semVer, operator, orEquals);
     }
 
     @Nonnull
