@@ -4,6 +4,7 @@ import xyz.rk0cc.josev.SemVer;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 public sealed abstract class SemVerCollection implements Collection<SemVer>, Cloneable
@@ -11,7 +12,7 @@ public sealed abstract class SemVerCollection implements Collection<SemVer>, Clo
     final Collection<SemVer> collection;
 
     protected SemVerCollection(Collection<SemVer> collection) {
-        this.collection = collection;
+        this.collection = Collections.unmodifiableCollection(collection);
     }
 
     @Override
