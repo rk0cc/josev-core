@@ -27,9 +27,6 @@ public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enu
         this.constraintPattern = constraintPattern;
         this.start = start;
         this.end = end;
-
-        if (!isValidConstraint())
-            throw new IllegalConstraintException("This constraint can not be applied.", start, end);
     }
 
     @Nonnull
@@ -51,8 +48,6 @@ public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enu
     public final SemVerConstraintNode end() {
         return end;
     }
-
-    protected abstract boolean isValidConstraint();
 
     /**
      * Parsing version constraint to specific class which inherited from {@link SemVerConstraint}.
