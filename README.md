@@ -13,10 +13,10 @@ These official and third-party Java artifacts provides
 
 **Official**
 
-|  Artifact ID  |      Version      |       Targeted platform        |                                  Repository                                  |
-|:-------------:|:-----------------:|:------------------------------:|:----------------------------------------------------------------------------:|
-|   josev-pub   |       1.0.0       |      `pub` (Dart/Flutter)      | [Link](https://github.com/rk0cc/josev-pubhttps://github.com/rk0cc/josev-pub) |
-| ~~josev-npm~~ | ~~(Coming soon)~~ | ~~`npm` (Node.js/Typescript)~~ |                              ~~(Coming soon)~~                               |
+|  Artifact ID  |      Version      |       Targeted platform        |                  Repository                |
+|:-------------:|:-----------------:|:------------------------------:|:------------------------------------------:|
+|   josev-pub   |       1.0.0       |      `pub` (Dart/Flutter)      | [Link](https://github.com/rk0cc/josev-pub) |
+| ~~josev-npm~~ | ~~(Coming soon)~~ | ~~`npm` (Node.js/Typescript)~~ |              ~~(Coming soon)~~             |
 
 **Third-party**
 
