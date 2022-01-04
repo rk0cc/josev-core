@@ -20,9 +20,26 @@ These official and third-party Java artifacts provides
 
 **Third-party**
 
-|                 Group ID                  | Artifact ID | Version | Target Platform | Kotlin supported | Link |
-|:-----------------------------------------:|:-----------:|:-------:|:---------------:|:----------------:|:----:|
-| No third-party JOSEV package released yet ||||||
+<table>
+    <tr>
+        <th>Group ID
+        <th>Artifact ID</th>
+        <th>Repository</th>
+        <th>Version</th>
+        <th>Targeted platform</th>
+        <th>Kotlin supported</th>
+        <th>Link</th>
+    </tr>
+    <tr>
+        <td colspan="8" style="text-align: center;">No third-party JOSEV package released yet</td>
+    </tr>
+</table>
+
+<!--
+| Group ID | Artifact ID | Repository | Version | Targeted platform | Kotlin supported | Link |
+|:--------:|:-----------:|:----------:|:-------:|:-----------------:|:----------------:|:----:|
+|          |             |            |         |                   |                  |      |
+-->
 
 ## Requirement
 
