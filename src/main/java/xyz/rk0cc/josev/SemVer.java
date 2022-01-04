@@ -407,7 +407,8 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
     /**
      * Generating a new {@link SemVer} object by a {@link String}.
      *
-     * @param version A {@link String} of Semantic Versioning.
+     * @param version A {@link String} of Semantic Versioning. If it contains '<code>v</code>' at the first
+     *                {@link Character} of {@link String#charAt(int)}, it will be omitted automatically.
      *
      * @return A Java object of {@link SemVer Semantic Versioning}.
      *
