@@ -31,7 +31,7 @@ These official and third-party Java artifacts provides
         <th>Link</th>
     </tr>
     <tr>
-        <td colspan="8" style="text-align: center;">No third-party JOSEV package released yet</td>
+        <td colspan="8" align="center">No third-party JOSEV package released yet</td>
     </tr>
 </table>
 
