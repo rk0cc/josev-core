@@ -7,21 +7,37 @@ import xyz.rk0cc.josev.SemVerRange.NonnullSemVerRange;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
- * Provides various of {@link xyz.rk0cc.josev.SemVerRange} to determine the {@link SemVer} meet complicated condition.
+ * Provides various of {@link SemVerRange} to determine the {@link SemVer} meet complicated condition.
+ * <br/>
+ * The {@link SemVerRange} must be {@link NonnullSemVerRange non-nulled}. However, it can not check and merge duplicate
+ * {@link SemVerRange} when applying overlapped conditions to ensure the configuration can be revertible.
  *
  * @since 1.0.0
  */
 public final class SemVerMultiRange implements Set<NonnullSemVerRange>, SemVerDetermineInRage, Cloneable {
+    /**
+     * A {@link Set} of applied {@link SemVer}.
+     */
     private final HashSet<NonnullSemVerRange> rangeSets;
+    private final boolean unmodifiable;
 
     public SemVerMultiRange() {
         this.rangeSets = new HashSet<>();
+        this.unmodifiable = false;
     }
 
-    private SemVerMultiRange(@Nonnull SemVerMultiRange origin) {
-        this.rangeSets = new HashSet<>(origin.rangeSets);
+    private SemVerMultiRange(@Nonnull SemVerMultiRange origin, boolean unmodifiable) {
+        HashSet<NonnullSemVerRange> originRS = new HashSet<>(origin.rangeSets);
+        this.rangeSets = unmodifiable
+                ? (HashSet<NonnullSemVerRange>) Set.copyOf(originRS)
+                :originRS;
+        this.unmodifiable = unmodifiable;
     }
 
     @Nonnegative
@@ -37,7 +53,7 @@ public final class SemVerMultiRange implements Set<NonnullSemVerRange>, SemVerDe
 
     @Override
     public boolean contains(Object o) {
-        return false;
+        return rangeSets.contains(o);
     }
 
     @Nonnull
@@ -71,7 +87,7 @@ public final class SemVerMultiRange implements Set<NonnullSemVerRange>, SemVerDe
 
     @Override
     public boolean containsAll(@Nonnull Collection<?> c) {
-        return false;
+        return rangeSets.containsAll(c);
     }
 
     @Override
@@ -95,13 +111,43 @@ public final class SemVerMultiRange implements Set<NonnullSemVerRange>, SemVerDe
     }
 
     @Override
-    public boolean isInRange(@Nonnull SemVer semVer) {
-        return false;
+    public Spliterator<NonnullSemVerRange> spliterator() {
+        return rangeSets.spliterator();
+    }
+
+    @SuppressWarnings("SuspiciousToArrayCall")
+    @Override
+    public <T> T[] toArray(IntFunction<T[]> generator) {
+        return rangeSets.toArray(generator);
     }
 
     @Override
-    public boolean isInRange(@Nonnull String semVer) throws NonStandardSemVerException {
-        return SemVerDetermineInRage.super.isInRange(semVer);
+    public boolean removeIf(Predicate<? super NonnullSemVerRange> filter) {
+        return rangeSets.removeIf(filter);
+    }
+
+    @Override
+    public Stream<NonnullSemVerRange> stream() {
+        return rangeSets.stream();
+    }
+
+    @Override
+    public Stream<NonnullSemVerRange> parallelStream() {
+        return rangeSets.parallelStream();
+    }
+
+    @Override
+    public void forEach(Consumer<? super NonnullSemVerRange> action) {
+        rangeSets.forEach(action);
+    }
+
+    @Override
+    public boolean isInRange(@Nonnull SemVer semVer) {
+        return stream().anyMatch(msv -> msv.isInRange(semVer));
+    }
+
+    public boolean isUnmodifiable() {
+        return unmodifiable;
     }
 
     /**
@@ -116,7 +162,7 @@ public final class SemVerMultiRange implements Set<NonnullSemVerRange>, SemVerDe
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
-            return new SemVerMultiRange(this);
+            return new SemVerMultiRange(this, false);
         }
     }
 
@@ -129,5 +175,10 @@ public final class SemVerMultiRange implements Set<NonnullSemVerRange>, SemVerDe
     @Override
     public String toString() {
         return '[' + Joiner.on(", ").join(rangeSets) + ']';
+    }
+
+    @Nonnull
+    public static SemVerMultiRange disableModification(@Nonnull SemVerMultiRange multiRange) {
+        return new SemVerMultiRange(multiRange, true);
     }
 }
