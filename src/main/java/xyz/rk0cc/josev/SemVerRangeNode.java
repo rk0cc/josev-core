@@ -12,22 +12,6 @@ public record SemVerRangeNode(@Nonnull SemVer semVer, char operator, boolean orE
         this.orEquals = orEquals;
     }
 
-    @Nonnull
-    public String traditionalExpression() {
-        StringBuilder b = new StringBuilder();
-
-        // Compare operator
-        b.append(operator);
-
-        // Equals assign
-        if (orEquals) b.append('=');
-
-        // String of semver
-        b.append(semVer.value());
-
-        return b.toString();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
