@@ -152,7 +152,7 @@ public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enu
                     && Pattern.matches("^[A-Za-z_$][A-Za-z0-9_$]*$", svcpa.parserMethodName()); // Valid naming
 
             // Get parser
-            final Method parser = constraintClass.getMethod(svcpa.parserMethodName(), String.class);
+            final Method parser = constraintClass.getDeclaredMethod(svcpa.parserMethodName(), String.class);
             final int parserModifier = parser.getModifiers();
             assert Modifier.isPublic(parserModifier)
                     && Modifier.isStatic(parserModifier);
