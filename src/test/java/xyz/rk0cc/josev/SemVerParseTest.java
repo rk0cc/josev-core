@@ -86,4 +86,20 @@ final class SemVerParseTest {
         assertNotNull(SemVer.tryParse("1.0.0"));
         assertNull(SemVer.tryParse("1.0"));
     }
+
+    @DisplayName("Semver compare matching")
+    @Order(4)
+    @Test
+    void testCompare() {
+        try {
+            assertTrue(SemVer.parse("1.0.0").isGreater(SemVer.parse("1.0.0-alpha")));
+            assertFalse(SemVer.parse("1.0.0").isGreater(SemVer.parse("1.0.0")));
+            assertTrue(SemVer.parse("1.0.0").isGreaterOrEquals(SemVer.parse("1.0.0")));
+            assertEquals(SemVer.parse("1.0.0"), SemVer.parse("1.0.0"));
+            assertFalse(SemVer.parse("1.0.0-bravo").isLower(SemVer.parse("1.0.0-charlie")));
+            assertFalse(SemVer.parse("1.0.1").isGreater(SemVer.parse("1.0.1+1")));
+        } catch (NonStandardSemVerException e) {
+            fail(e);
+        }
+    }
 }
