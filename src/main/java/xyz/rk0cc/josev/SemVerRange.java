@@ -86,7 +86,12 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
         }
 
         /**
-         * {@inheritDoc}
+         * A node which specify the minimum version that can be accepted (Assume no version omitted between
+         * start and {@link #end() start}).
+         *
+         * @return A node of version information that can be assembled to traditional syntax.
+         *
+         * @see #end()
          */
         @Nonnull
         @Override
@@ -95,7 +100,12 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
         }
 
         /**
-         * {@inheritDoc}
+         * A node which specify the maximum version that can be accepted (Assume no version omitted between
+         * {@link #start() start} and end).
+         *
+         * @return A node of version information that can be assembled to traditional syntax.
+         *
+         * @see #start()
          */
         @Nonnull
         @Override
@@ -141,7 +151,12 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
         }
 
         /**
-         * {@inheritDoc}
+         * A node which specify the minimum version that can be accepted (Assume no version omitted between
+         * start and {@link #end() start}).
+         *
+         * @return A node of version information that can be assembled to traditional syntax.
+         *
+         * @see #end()
          */
         @Nullable
         @Override
@@ -150,7 +165,12 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
         }
 
         /**
-         * {@inheritDoc}
+         * A node which specify the maximum version that can be accepted (Assume no version omitted between
+         * {@link #start() start} and end).
+         *
+         * @return A node of version information that can be assembled to traditional syntax.
+         *
+         * @see #start()
          */
         @Nullable
         @Override
