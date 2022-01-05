@@ -42,7 +42,6 @@
     </licenses>
 
     <scm>
-        <tag>main</tag>
         <url>https://github.com/rk0cc/josev-core/tree/main</url>
         <connection>scm:git:git://github.com/rk0cc/josev-core.git</connection>
         <developerConnection>scm:git:git://github.com/rk0cc/josev-core.git</developerConnection>
