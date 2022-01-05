@@ -1,6 +1,6 @@
 ## 1.0.1
 
-* Modularized regexp of Semver pattern
+* Add inspection year
 
 ## 1.0.0
 
