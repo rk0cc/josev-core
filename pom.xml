@@ -79,13 +79,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <excludes>
-                    <exclude>wiki</exclude>
-                </excludes>
-            </resource>
-        </resources>
         <pluginManagement>
             <plugins>
                 <plugin>
