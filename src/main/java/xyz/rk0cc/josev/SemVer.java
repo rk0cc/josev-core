@@ -33,9 +33,12 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
     /**
      * A {@link String} of Semantic Versioning regex which will be applied on {@link Pattern#compile(String)}.
      */
-    public static final String SEMVER_REGEX = "(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)"
-            + "(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
-            + "(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?";
+    public static final String SEMVER_REGEX
+            = SemVerPattern.VERSION.REGEXP + "\\."
+            + SemVerPattern.VERSION.REGEXP + "\\."
+            + SemVerPattern.VERSION.REGEXP + "\\."
+            + SemVerPattern.PRE_RELEASE_TAG.REGEXP
+            + SemVerPattern.BUILD_TAG.REGEXP;
 
     /**
      * Compiling a {@link Pattern} to validate {@link SemVer}.
@@ -492,6 +495,43 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
             return parse(version);
         } catch (NonStandardSemVerException e) {
             return null;
+        }
+    }
+
+    /**
+     * An {@link Enum} that contains {@link String} that uses to assemble {@link #SEMVER_REGEX}.
+     * <br/>
+     * It allows configuring new definition of {@link xyz.rk0cc.josev.constraint.SemVerConstraint version constraint}
+     * without duplication.
+     *
+     * @since 1.1.0
+     */
+    public enum SemVerPattern {
+        /**
+         * A regexp {@link String} of version section.
+         */
+        VERSION("(0|[1-9]\\d*)"),
+        /**
+         * A regexp {@link String} of pre-release tag.
+         */
+        PRE_RELEASE_TAG("(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"),
+        /**
+         * A regexp {@link String} of build tag.
+         */
+        BUILD_TAG("(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?");
+
+        /**
+         * {@link #SEMVER_REGEX}'s corresponded regexp pattern in {@link String}.
+         */
+        public final String REGEXP;
+
+        /**
+         * Assign regexp and apply defined <code>REGEXP</code>.
+         *
+         * @param REGEXP A pattern of this enum value.
+         */
+        SemVerPattern(@Nonnull String REGEXP) {
+            this.REGEXP = REGEXP;
         }
     }
 }
