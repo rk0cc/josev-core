@@ -46,7 +46,7 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
      *
      * @see #end()
      */
-    protected SemVerRangeNode start() {
+    SemVerRangeNode start() {
         return start;
     }
 
@@ -58,7 +58,7 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
      *
      * @see #start()
      */
-    protected SemVerRangeNode end() {
+    SemVerRangeNode end() {
         return end;
     }
 
@@ -112,9 +112,12 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
                     ? start().semVer().isLowerOrEquals(semVer)
                     : start().semVer().isLower(semVer);
 
-            final boolean beforeEnd = end().orEquals()
+            boolean beforeEnd = end().orEquals()
                     ? end().semVer().isGreaterOrEquals(semVer)
                     : end().semVer().isGreater(semVer);
+
+            if (beforeEnd && end().semVer().isSameVersionGroup(semVer))
+                beforeEnd = end().semVer().preRelease() != null;
 
             return afterStart && beforeEnd;
         }
@@ -165,9 +168,12 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
                     ? start().semVer().isLowerOrEquals(semVer)
                     : start().semVer().isLower(semVer));
 
-            final boolean beforeEnd = end() == null || (end().orEquals()
+            boolean beforeEnd = end() == null || (end().orEquals()
                     ? end().semVer().isGreaterOrEquals(semVer)
                     : end().semVer().isGreater(semVer));
+
+            if (beforeEnd && end() != null && end().semVer().isSameVersionGroup(semVer))
+                beforeEnd = end().semVer().preRelease() != null;
 
             return afterStart && beforeEnd;
         }

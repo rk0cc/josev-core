@@ -279,6 +279,17 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
     }
 
     /**
+     * Check another {@link SemVer} has the same {@link #major()}, {@link #minor()} and {@link #patch()} with this.
+     *
+     * @param semVer A {@link SemVer} that to determine has same version group.
+     *
+     * @return <code>true</code> if it is.
+     */
+    public boolean isSameVersionGroup(@Nonnull SemVer semVer) {
+        return major == semVer.major && minor == semVer.minor && patch == semVer.patch;
+    }
+
+    /**
      * Assemble {@link #major}, {@link #minor}, {@link #patch}, {@link #preRelease} and {@link #build} to
      * {@link String} without validate with {@link #SEMVER_REGEX}.
      *

@@ -10,6 +10,9 @@ import javax.annotation.Nonnull;
 public interface SemVerDetermineInRage {
     /**
      * Check this <code>semVer</code> is in the range.
+     * <br/>
+     * Mostly, pre-release version is not consider in the range. It will has proper document if this accepts pre-release
+     * of {@link SemVer}.
      *
      * @param semVer A version that to determine is in the constraint range.
      *
