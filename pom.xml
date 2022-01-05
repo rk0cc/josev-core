@@ -97,11 +97,6 @@
                     <version>3.2.0</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
-                </plugin>
-                <plugin>
                     <!-- Create Java source in single jar -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
@@ -288,7 +283,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <show>protected</show>
+                            <show>private</show>
                             <doclint>none</doclint>
                         </configuration>
                     </plugin>
