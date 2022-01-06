@@ -40,8 +40,6 @@ jobs:
           distribution: ${{ matrix.jdk-distro }}
           java-version: ${{ matrix.jdk-version }}
           cache: 'maven'
-      - name: Get dependencies
-        run: mvn install
       - name: Run surefire
         id: maven-surefire
         run: mvn test
