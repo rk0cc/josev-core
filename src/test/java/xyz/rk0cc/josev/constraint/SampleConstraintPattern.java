@@ -3,6 +3,7 @@ package xyz.rk0cc.josev.constraint;
 import xyz.rk0cc.josev.SemVer;
 
 import javax.annotation.Nonnull;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public enum SampleConstraintPattern implements ConstraintPattern<SampleConstraintPattern> {
@@ -21,8 +22,7 @@ public enum SampleConstraintPattern implements ConstraintPattern<SampleConstrain
 
     @Nonnull
     @Override
-    public Pattern constraintPattern() {
-        return constraintPattern;
+    public Function<String, Boolean> conditionFunction() {
+        return s -> constraintPattern.matcher(s).matches();
     }
-
 }
