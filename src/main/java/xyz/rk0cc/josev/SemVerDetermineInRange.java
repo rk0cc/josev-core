@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
  *
  * @since 1.0.0
  */
-public interface SemVerDetermineInRage {
+public interface SemVerDetermineInRange {
     /**
      * Check this <code>semVer</code> is in the range.
      * <br/>

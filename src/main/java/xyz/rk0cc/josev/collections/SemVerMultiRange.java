@@ -20,7 +20,7 @@ import java.util.stream.Stream;
  *
  * @since 1.0.0
  */
-public final class SemVerMultiRange implements Set<NonnullSemVerRange>, SemVerDetermineInRage, Cloneable {
+public final class SemVerMultiRange implements Set<NonnullSemVerRange>, SemVerDetermineInRange, Cloneable {
     /**
      * A {@link Set} of applied {@link SemVer}.
      */

@@ -16,7 +16,7 @@ import java.io.Serializable;
  *
  * @since 1.0.0
  */
-public sealed abstract class SemVerRange implements Serializable, SemVerDetermineInRage
+public sealed abstract class SemVerRange implements Serializable, SemVerDetermineInRange
         permits SemVerRange.NonnullSemVerRange, SemVerRange.NullableSemVerRange {
     /**
      * The range node.
@@ -66,7 +66,7 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
      * {@inheritDoc}
      */
     public final boolean isInRange(@Nonnull String semVer) throws NonStandardSemVerException {
-        return SemVerDetermineInRage.super.isInRange(semVer);
+        return SemVerDetermineInRange.super.isInRange(semVer);
     }
 
     /**
