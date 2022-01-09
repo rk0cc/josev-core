@@ -7,8 +7,10 @@ import xyz.rk0cc.josev.SemVerRangeNode;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.*;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Version constraint is a definition of {@link SemVer} range which bounding the version to ensure compatibility. This,
@@ -99,15 +101,103 @@ public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enu
     }
 
     /**
+     * Receive annotation on the parser.
+     *
+     * @param constraintParser A {@link Class} that using for parser.
+     *
+     * @return {@link SemVerConstraintParser} from parser {@link Class}.
+     */
+    @Nonnull
+    private static SemVerConstraintParser extractParserAnnotation(@Nonnull Class<?> constraintParser) {
+        SemVerConstraintParser annotation = constraintParser.getAnnotation(SemVerConstraintParser.class);
+
+        assert annotation != null;
+        assert annotation.enabled();
+        assert Pattern.matches("^[a-zA-z$_][a-zA-z0-9$_]*$", annotation.parserMethodName());
+
+        return annotation;
+    }
+
+    /**
+     * Get a {@link Method} which is static and uses to {@link Method#invoke(Object, Object...) invoke} parser.
+     *
+     * @param constraintParser A {@link Class} of parser with annotated {@link SemVerConstraintParser}.
+     *
+     * @return Parser method.
+     *
+     * @throws NoSuchMethodException If this parser does not contains parser.
+     */
+    @Nonnull
+    private static Method getParserMethod(@Nonnull Class<?> constraintParser) throws NoSuchMethodException {
+        SemVerConstraintParser parserAnnotation = extractParserAnnotation(constraintParser);
+        final Method parser = constraintParser.getMethod(parserAnnotation.parserMethodName(), String.class);
+        final int methodModifier = parser.getModifiers();
+
+        assert Modifier.isPublic(methodModifier) && Modifier.isStatic(methodModifier);
+        assert parser.getReturnType().equals(constraintParser);
+
+        return parser;
+    }
+
+    /**
+     * Check current parser is valid to use {@link #parse(Class, String)}.
+     *
+     * @param constraintParser Targeted {@link Class}.
+     * @param withAbstract Include abstract parser or not
+     *
+     * @return <code>true</code> if this parser {@link Class} is meet the requirement.
+     */
+    private static boolean checkValidParser(@Nonnull Class<?> constraintParser, boolean withAbstract) {
+        final int classModifier = constraintParser.getModifiers();
+
+        // Check class type
+        if (!Modifier.isPublic(classModifier) || Modifier.isInterface(classModifier)) return false;
+
+        // Handle abstract
+        final boolean absParser = Modifier.isAbstract(classModifier);
+        if (!withAbstract && absParser) return false;
+        else if (!(absParser ? constraintParser.isSealed() : Modifier.isFinal(classModifier))) return false;
+
+        // Get method to validate it's implemented parser
+        try {
+            getParserMethod(constraintParser);
+        } catch (NoSuchMethodException | AssertionError e) {
+            return false;
+        }
+
+        // Abstract parser handler
+        if (absParser) {
+            Stream<Class<?>> permitClassStream = Arrays.asList(constraintParser.getPermittedSubclasses())
+                    .parallelStream();
+
+            return permitClassStream.allMatch(pc -> checkValidParser(pc, false));
+        }
+
+        return true;
+    }
+
+    /**
      * Parser a {@link String} of <code>versionConstraint</code> and specify which {@link Class} that extended from
      * {@link SemVerConstraint} will be exported.
      * <br/>
      * <b style="font-size: 18px;">Not all {@linkplain Class} which inherited from {@linkplain SemVerConstraint} can be
      * parsed by this method unless it meets these requirements:</b>
      * <ul>
-     *     <li>The class must be public, non-abstract class</li>
+     *     <li>
+     *         The class must be public.
+     *         <ul>
+     *             <li>
+     *                 If the annotated class is abstracted, it must be sealed and all permitted class should not
+     *                 abstract again.
+     *             </li>
+     *             <li>For implementation class, it must be final.</li>
+     *         </ul>
+     *     </li>
      *     <li>Do not implement any public scope constructor</li>
-     *     <li>Has a static method that returns the same {@link Class} of <code>constraintClass</code></li>
+     *     <li>
+     *         Has a static method that returns the same {@link Class} of <code>constraintClass</code>, it also applied
+     *         with abstract parser.
+     *     </li>
      *     <li>
      *         Annotated {@link SemVerConstraintParser} with proper configurations:
      *         <ul>
@@ -133,29 +223,11 @@ public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enu
             @Nonnull Class<C> constraintClass,
             @Nullable String versionConstraint
     ) {
+        assert !constraintClass.equals(SemVerConstraint.class); // Do not reference itself
         try {
-            // Check class itself
-            final int classModifier = constraintClass.getModifiers();
-            assert Modifier.isPublic(classModifier)
-                    && !Modifier.isAbstract(classModifier)
-                    && !Modifier.isInterface(classModifier);
+            assert checkValidParser(constraintClass, true);
 
-            // Check constructor
-            assert constraintClass.getConstructors().length == 0; // No public constructor
-            assert constraintClass.getDeclaredConstructors().length > 0; // Non-public constructor
-
-            // Check defined annotation and get which parse will be used
-            final SemVerConstraintParser svcpa = constraintClass.getAnnotation(SemVerConstraintParser.class);
-            assert svcpa != null && svcpa.enabled();
-            assert !svcpa.parserMethodName().isBlank() // No empty
-                    && Pattern.matches("^[A-Za-z_$][A-Za-z0-9_$]*$", svcpa.parserMethodName()); // Valid naming
-
-            // Get parser
-            final Method parser = constraintClass.getDeclaredMethod(svcpa.parserMethodName(), String.class);
-            final int parserModifier = parser.getModifiers();
-            assert Modifier.isPublic(parserModifier)
-                    && Modifier.isStatic(parserModifier);
-            assert parser.getReturnType().equals(constraintClass); // Must be return same type
+            Method parser = getParserMethod(constraintClass);
 
             return (C) parser.invoke(null, versionConstraint);
         } catch (Exception | AssertionError e) {
