@@ -166,12 +166,10 @@ public abstract class SemVerConstraint<E extends ConstraintPattern<? extends Enu
         }
 
         // Abstract parser handler
-        if (absParser) {
-            Stream<Class<?>> permitClassStream = Arrays.asList(constraintParser.getPermittedSubclasses())
-                    .parallelStream();
+        if (absParser)
+            return Arrays.stream(constraintParser.getPermittedSubclasses())
+                    .allMatch(pc -> checkValidParser(pc, false));
 
-            return permitClassStream.allMatch(pc -> checkValidParser(pc, false));
-        }
 
         return true;
     }
