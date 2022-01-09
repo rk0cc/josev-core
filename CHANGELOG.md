@@ -1,3 +1,8 @@
+## 3.0.0
+
+* Simplify range
+* Allow parse constraint via abstract class
+
 ## 2.0.1
 
 * Typo fix in `SemVerDetermineInRange` (missed `n`)

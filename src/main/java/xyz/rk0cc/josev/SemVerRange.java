@@ -1,7 +1,6 @@
 package xyz.rk0cc.josev;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.Serializable;
 
 /**
@@ -12,12 +11,11 @@ import java.io.Serializable;
  * determine is in range with {@link SemVer#isGreater(SemVer)}, {@link SemVer#isLower(SemVer)} or more.
  * <br/>
  * Using to assign version constraint class {@link xyz.rk0cc.josev.constraint.SemVerConstraint} is inherited from
- * {@link SemVerRange.NullableSemVerRange}.
+ * {@link SemVerRange}.
  *
  * @since 1.0.0
  */
-public sealed abstract class SemVerRange implements Serializable, SemVerDetermineInRange
-        permits SemVerRange.NonnullSemVerRange, SemVerRange.NullableSemVerRange {
+public class SemVerRange implements Serializable, SemVerDetermineInRange {
     /**
      * The range node.
      */
@@ -29,7 +27,7 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
      * @param start The range start from.
      * @param end The range end at.
      */
-    protected SemVerRange(SemVerRangeNode start, SemVerRangeNode end) {
+    public SemVerRange(SemVerRangeNode start, SemVerRangeNode end) {
         assert start == null || start.operator() == '>';
         assert end == null || end.operator() == '<';
         assert start == null || end == null || start.semVer().isLowerOrEquals(end.semVer());
@@ -46,7 +44,7 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
      *
      * @see #end()
      */
-    SemVerRangeNode start() {
+    public SemVerRangeNode start() {
         return start;
     }
 
@@ -58,8 +56,27 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
      *
      * @see #start()
      */
-    SemVerRangeNode end() {
+    public SemVerRangeNode end() {
         return end;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isInRange(@Nonnull SemVer semVer) {
+        final boolean afterStart = start() == null || (start().orEquals()
+                ? start().semVer().isLowerOrEquals(semVer)
+                : start().semVer().isLower(semVer));
+
+        boolean beforeEnd = end() == null || (end().orEquals()
+                ? end().semVer().isGreaterOrEquals(semVer)
+                : end().semVer().isGreater(semVer));
+
+        if (beforeEnd && end() != null && end().semVer().isSameVersionGroup(semVer))
+            beforeEnd = end().semVer().preRelease() != null;
+
+        return afterStart && beforeEnd;
     }
 
     /**
@@ -67,135 +84,5 @@ public sealed abstract class SemVerRange implements Serializable, SemVerDetermin
      */
     public final boolean isInRange(@Nonnull String semVer) throws NonStandardSemVerException {
         return SemVerDetermineInRange.super.isInRange(semVer);
-    }
-
-    /**
-     * A {@link SemVerRange} that {@link Nonnull disallowing parsing <code>null</code>}.
-     *
-     * @since 1.0.0
-     */
-    public static non-sealed class NonnullSemVerRange extends SemVerRange {
-        /**
-         * Create new range definition of {@link SemVer} that disallows null.
-         *
-         * @param start The range start from.
-         * @param end The range end at.
-         */
-        public NonnullSemVerRange(@Nonnull SemVerRangeNode start, @Nonnull SemVerRangeNode end) {
-            super(start, end);
-        }
-
-        /**
-         * A node which specify the minimum version that can be accepted (Assume no version omitted between
-         * start and {@link #end() start}).
-         *
-         * @return A node of version information that can be assembled to traditional syntax.
-         *
-         * @see #end()
-         */
-        @Nonnull
-        @Override
-        public SemVerRangeNode start() {
-            return super.start();
-        }
-
-        /**
-         * A node which specify the maximum version that can be accepted (Assume no version omitted between
-         * {@link #start() start} and end).
-         *
-         * @return A node of version information that can be assembled to traditional syntax.
-         *
-         * @see #start()
-         */
-        @Nonnull
-        @Override
-        public SemVerRangeNode end() {
-            return super.end();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean isInRange(@Nonnull SemVer semVer) {
-            final boolean afterStart = start().orEquals()
-                    ? start().semVer().isLowerOrEquals(semVer)
-                    : start().semVer().isLower(semVer);
-
-            boolean beforeEnd = end().orEquals()
-                    ? end().semVer().isGreaterOrEquals(semVer)
-                    : end().semVer().isGreater(semVer);
-
-            if (beforeEnd && end().semVer().isSameVersionGroup(semVer))
-                beforeEnd = end().semVer().preRelease() != null;
-
-            return afterStart && beforeEnd;
-        }
-    }
-
-    /**
-     * A {@link SemVerRange} that {@link Nullable allowing parsing <code>null</code>}.
-     *
-     * @since 1.0.0
-     */
-    public static non-sealed class NullableSemVerRange extends SemVerRange {
-
-        /**
-         * Create new range definition of {@link SemVer} that allows null.
-         *
-         * @param start The range start from.
-         * @param end The range end at.
-         */
-        public NullableSemVerRange(@Nullable SemVerRangeNode start, @Nullable SemVerRangeNode end) {
-            super(start, end);
-        }
-
-        /**
-         * A node which specify the minimum version that can be accepted (Assume no version omitted between
-         * start and {@link #end() start}).
-         *
-         * @return A node of version information that can be assembled to traditional syntax.
-         *
-         * @see #end()
-         */
-        @Nullable
-        @Override
-        public SemVerRangeNode start() {
-            return super.start();
-        }
-
-        /**
-         * A node which specify the maximum version that can be accepted (Assume no version omitted between
-         * {@link #start() start} and end).
-         *
-         * @return A node of version information that can be assembled to traditional syntax.
-         *
-         * @see #start()
-         */
-        @Nullable
-        @Override
-        public SemVerRangeNode end() {
-            return super.end();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @SuppressWarnings("ConstantConditions")
-        @Override
-        public boolean isInRange(@Nonnull SemVer semVer) {
-            final boolean afterStart = start() == null || (start().orEquals()
-                    ? start().semVer().isLowerOrEquals(semVer)
-                    : start().semVer().isLower(semVer));
-
-            boolean beforeEnd = end() == null || (end().orEquals()
-                    ? end().semVer().isGreaterOrEquals(semVer)
-                    : end().semVer().isGreater(semVer));
-
-            if (beforeEnd && end() != null && end().semVer().isSameVersionGroup(semVer))
-                beforeEnd = end().semVer().preRelease() != null;
-
-            return afterStart && beforeEnd;
-        }
     }
 }
