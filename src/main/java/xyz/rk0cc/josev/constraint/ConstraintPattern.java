@@ -3,7 +3,6 @@ package xyz.rk0cc.josev.constraint;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -20,14 +19,14 @@ import java.util.regex.Pattern;
  */
 public interface ConstraintPattern<E extends Enum<? extends ConstraintPattern<E>>> extends Serializable {
     /**
-     * A {@link Function} providing a {@link String} is follow the syntax of version constraint. The {@link String}
+     * A {@link Predicate} providing a {@link String} is follow the syntax of version constraint. The {@link String}
      * parameter may be <code>null</code>.
      *
-     * @return A {@link Function} to validate version constraint.
+     * @return A {@link Predicate} to validate version constraint.
      *
      * @since 2.0.0
      */
-    Function<String, Boolean> conditionFunction();
+    Predicate<String> conditionFunction();
 
     /**
      * Some format of constraint pattern allows parse <code>null</code>. If this method return <code>true</code>, it
@@ -53,6 +52,6 @@ public interface ConstraintPattern<E extends Enum<? extends ConstraintPattern<E>
      */
     default boolean isValidConstraintMethods(@Nullable String versionConstraint) {
         if (versionConstraint == null) return acceptParseNull();
-        return conditionFunction().apply(versionConstraint);
+        return conditionFunction().test(versionConstraint);
     }
 }
