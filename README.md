@@ -14,10 +14,10 @@ These official and third-party Java artifacts provides
 
 **Official**
 
-|  Artifact ID  |      Version      |           Targeted platform            |                  Repository                |
-|:-------------:|:-----------------:|:--------------------------------------:|:------------------------------------------:|
-|   josev-pub   | [![Maven Central](https://img.shields.io/maven-central/v/xyz.rk0cc.josev/josev-pub.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22xyz.rk0cc.josev%22%20AND%20a:%22josev-pub%22) |          `pub` (Dart/Flutter)          | [Link](https://github.com/rk0cc/josev-pub) |
-|   josev-npm   |   3.0.0-SNAPSHOT  |       `npm` (Node.js/Typescript)       | [Link](https://github.com/rk0cc/josev-npm) |
+| Artifact ID |                                                                                               Version                                                                                               |     Targeted platform      |                 Repository                 |
+|:-----------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------:|:------------------------------------------:|
+|  josev-pub  | [![Maven Central](https://img.shields.io/maven-central/v/xyz.rk0cc.josev/josev-pub.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22xyz.rk0cc.josev%22%20AND%20a:%22josev-pub%22) |    `pub` (Dart/Flutter)    | [Link](https://github.com/rk0cc/josev-pub) |
+|  josev-npm  |                                                                                           3.0.0-SNAPSHOT                                                                                            | `npm` (Node.js/Typescript) | [Link](https://github.com/rk0cc/josev-npm) |
 
 **Third-party**
 
