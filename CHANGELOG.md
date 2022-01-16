@@ -1,3 +1,8 @@
+## 3.1.0
+
+* Assign `provide` scope to dependencies which doesn't need outside this package
+* Add interface `SemVerRangeCollection` for fully expand whatever `Collection` base you wanted.
+
 ## 3.0.0
 
 * Simplify range
