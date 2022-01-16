@@ -31,7 +31,7 @@
 
     <groupId>xyz.rk0cc.josev</groupId>
     <artifactId>josev-core</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
 
     <licenses>
         <license>
@@ -59,17 +59,19 @@
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>3.0.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.0.1-jre</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.8.2</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>31.0.1-jre</version>
         </dependency>
         <dependency>
             <groupId>com.opencsv</groupId>
