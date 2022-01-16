@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * @since 3.0.0
  */
 public abstract class SemVerMultipleRange<R extends SemVerRange>
-        implements Set<R>, SemVerDetermineInRange, Serializable {
+        implements Set<R>, SemVerRangeCollection<R>, SemVerDetermineInRange, Serializable {
     /**
      * Range item.
      */
@@ -199,13 +199,10 @@ public abstract class SemVerMultipleRange<R extends SemVerRange>
     }
 
     /**
-     * Get corresponded index of {@link Set} of {@link R}.
-     *
-     * @param index Index of {@link Set}.
-     *
-     * @return A {@link R range} object in the list.
+     * {@inheritDoc}
      */
     @Nonnull
+    @Override
     public final R elementAt(@Nonnegative int index) {
         Optional<R> optR = ranges.stream().skip(index).findFirst();
         if (optR.isEmpty()) throw new IndexOutOfBoundsException(index);
@@ -213,13 +210,10 @@ public abstract class SemVerMultipleRange<R extends SemVerRange>
     }
 
     /**
-     * Get a {@link List} of {@link R} which matching the <code>condition</code>.
-     *
-     * @param condition Condition of searching.
-     *
-     * @return A {@link List} that matched the <code>condition</code>.
+     * {@inheritDoc}
      */
     @Nonnull
+    @Override
     public final List<R> where(@Nonnull Predicate<R> condition) {
         return ranges.stream().filter(condition).toList();
     }
