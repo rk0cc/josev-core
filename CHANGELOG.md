@@ -1,3 +1,7 @@
+## 3.1.1
+
+* Fix `SemVer.parse(String)` throw `IllegalStateException` when importing this dependency.
+
 ## 3.1.0
 
 * Assign `provide` scope to dependencies which doesn't need outside this package

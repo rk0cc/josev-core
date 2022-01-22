@@ -7,6 +7,7 @@ semver,valid
 1.1.2+meta-valid,true
 1.0.0-alpha,true
 1.0.0-beta,true
+1.0.0-pre-1,true
 1.0.0-alpha.beta,true
 1.0.0-alpha.beta.1,true
 1.0.0-alpha.1,true

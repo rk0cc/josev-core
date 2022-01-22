@@ -428,37 +428,36 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
      *
      * @see #tryParse(String)
      */
-    @SuppressWarnings("AssertWithSideEffects")
     @Nonnull
     public static SemVer parse(@Nonnull String version) throws NonStandardSemVerException {
         final String v = version.charAt(0) == 'v' ? version.substring(1) : version;
-        try {
-            final Matcher vm = compiledSemverRegex().matcher(v);
-            assert vm.matches();
+        final Matcher vm = compiledSemverRegex().matcher(v);
+        if (!vm.matches()) throw new NonStandardSemVerException(version, new AssertionError());
 
-            // Extract string from group
-            ArrayList<String> matchedGroup = new ArrayList<>();
-            int g = 1; // Must be started from 1, 0 is entire version string
-            while (true) {
-                try {
-                    matchedGroup.add(vm.group(g++));
-                } catch (IndexOutOfBoundsException ioobe) {
-                    // Stop append if reached maximum
-                    break;
-                }
-            }
-
-            // 3 mandatory part
-            final long major, minor, patch;
+        // Extract string from group
+        ArrayList<String> matchedGroup = new ArrayList<>();
+        int g = 1; // Must be started from 1, 0 is entire version string
+        while (true) {
             try {
-                // It should be decimal, otherwise it has been thrown already.
-                major = Long.parseLong(matchedGroup.get(0), 10);
-                minor = Long.parseLong(matchedGroup.get(1), 10);
-                patch = Long.parseLong(matchedGroup.get(2), 10);
-            } catch (IndexOutOfBoundsException isvd) {
-                throw new AssertionError(isvd);
+                matchedGroup.add(vm.group(g++));
+            } catch (IndexOutOfBoundsException ioobe) {
+                // Stop append if reached maximum
+                break;
             }
+        }
 
+        // 3 mandatory part
+        final long major, minor, patch;
+        try {
+            // It should be decimal, otherwise it has been thrown already.
+            major = Long.parseLong(matchedGroup.get(0), 10);
+            minor = Long.parseLong(matchedGroup.get(1), 10);
+            patch = Long.parseLong(matchedGroup.get(2), 10);
+        } catch (IndexOutOfBoundsException | NumberFormatException e) {
+            throw new NonStandardSemVerException(version, e);
+        }
+
+        try {
             switch (matchedGroup.size()) {
                 case 3:
                     return new SemVer(major, minor, patch);
@@ -472,8 +471,8 @@ public final class SemVer implements Comparable<SemVer>, Serializable {
                 default:
                     throw new AssertionError("Unexpected number of semver pattern group found");
             }
-        } catch (Throwable t) {
-            throw (t instanceof NonStandardSemVerException nt) ? nt : new NonStandardSemVerException(version, t);
+        } catch (AssertionError e) {
+            throw new NonStandardSemVerException(version, e);
         }
     }
 
