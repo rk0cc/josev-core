@@ -1,3 +1,7 @@
+## 3.1.2
+
+* Fix incorrect scope when importing `guava`.
+
 ## 3.1.1
 
 * Fix `SemVer.parse(String)` throw `IllegalStateException` when importing this dependency.
