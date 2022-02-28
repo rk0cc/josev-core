@@ -1,3 +1,8 @@
+## 3.2.0
+
+* Added new constraint pattern enum: `UnsupportedConstraintPattern`.
+  * It uses for specify for too complicated or unsupported constraint policy. 
+
 ## 3.1.2
 
 * Fix incorrect scope when importing `guava`.
