@@ -1,6 +1,7 @@
 # Java Object of SEmantic Versioning - JOSEV
 [![Test](https://github.com/rk0cc/josev-core/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/rk0cc/josev-core/actions/workflows/test.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/xyz.rk0cc.josev/josev-core.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22xyz.rk0cc.josev%22%20AND%20a:%22josev-core%22)
+![GitHub Sponsors](https://img.shields.io/github/sponsors/rk0cc)
 
 A java object help to define Semantic Versioning information by a string.
 
